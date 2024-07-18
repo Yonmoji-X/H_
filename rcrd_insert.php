@@ -18,6 +18,9 @@ function get_file_content($file) {
     return null;
 }
 
+// 現在日時取得
+$indate = date('Y-m-d H:i:s');
+
 foreach ($_POST as $key => $value) {
     // タイトル項目かチェック
     if (strpos($key, 'title_') === 0) {
@@ -39,8 +42,8 @@ foreach ($_POST as $key => $value) {
         // echo '</pre>';
 
         // データ挿入SQL作成
-        $sql = "INSERT INTO H_record_table(admin_or_emp, work_in_or_out, title, check_item, text, photo, temp)
-                VALUES(:admin_or_emp, :work_in_or_out, :title, :check_item, :text, :photo, :temp)";
+        $sql = "INSERT INTO H_record_table(admin_or_emp, work_in_or_out, title, check_item, text, photo, temp, indate)
+                VALUES(:admin_or_emp, :work_in_or_out, :title, :check_item, :text, :photo, :temp, :indate)";
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':admin_or_emp', $admin_or_emp, PDO::PARAM_INT);
         $stmt->bindValue(':work_in_or_out', $work_in_or_out, PDO::PARAM_INT);
@@ -49,6 +52,7 @@ foreach ($_POST as $key => $value) {
         $stmt->bindValue(':text', $text, PDO::PARAM_STR);
         $stmt->bindValue(':photo', $photo, PDO::PARAM_LOB); // BLOB型として設定
         $stmt->bindValue(':temp', $temp, PDO::PARAM_INT);
+        $stmt->bindValue(':indate', $indate, PDO::PARAM_STR);
         $status = $stmt->execute();
 
         if ($status == false) {
