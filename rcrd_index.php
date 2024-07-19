@@ -9,7 +9,11 @@ sschk();
 
 // セッションからユーザーのauth_idを取得
 $auth_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+// try {
 
+// } catch(PDOException $e) {
+//   echo 'Database error: ' . $e->getMessage();
+// }
 // 2. データ取得SQL作成
 $pdo = db_conn();
 $sql = "SELECT * FROM H_template_table WHERE auth_id = :auth_id";
@@ -17,10 +21,25 @@ $stmt = $pdo->prepare($sql);
 $stmt->bindValue(':auth_id', $auth_id, PDO::PARAM_INT);
 $status = $stmt->execute();
 
+$sql_ref = "SELECT * FROM H_member_table WHERE auth_id = :auth_id";
+$stmt_ref = $pdo->prepare($sql_ref);
+$stmt_ref->bindValue(':auth_id', $auth_id, PDO::PARAM_INT);
+$status_ref = $stmt_ref->execute();
 // 3. データ表示
 $values = "";
 if ($status == false) {
     sql_error($stmt);
+}
+if ($status_ref == false) {
+    sql_error($stmt_ref);
+}
+
+$members = [];
+while ($row = $stmt_ref->fetch(PDO::FETCH_ASSOC)) {
+    $members[] = [
+      'm_id' => $row['id'],
+      'm_name' => $row['name']
+  ];
 }
 
 // 全データ取得
@@ -60,6 +79,14 @@ div{padding: 10px;font-size:16px;}
             <option value="0">退勤時</option>
         </select>
         <div id="items_container"></div>
+
+        <select name="recorder">
+          <?php foreach ($members as $member): ?>
+            <option value="<?= h($member['m_id']) ?>"><?= h($member['m_name']) ?></option>
+          <?php endforeach; ?>
+        </select>
+
+        <input type="hidden" name="auth_id" value="<?= h($auth_id) ?>">
         <input type="submit" value="完了">
     </fieldset>
 </form>

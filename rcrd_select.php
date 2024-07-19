@@ -9,9 +9,20 @@ include("funcs.php");
 sschk();
 
 // 2. データ登録SQL作成
+// $pdo = db_conn();
+// $sql = "SELECT * FROM H_record_table";
+// $stmt = $pdo->prepare($sql);
+
+// セッションからユーザーのauth_idを取得
+$auth_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+
+// 2. データ登録SQL作成
 $pdo = db_conn();
-$sql = "SELECT * FROM H_record_table";
+$sql = "SELECT * FROM H_record_table WHERE auth_id = :auth_id";
 $stmt = $pdo->prepare($sql);
+
+// プレースホルダーに値をバインド
+$stmt->bindValue(':auth_id', $auth_id, PDO::PARAM_INT);
 
 $status = $stmt->execute();
 

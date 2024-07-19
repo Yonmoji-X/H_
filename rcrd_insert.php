@@ -6,6 +6,7 @@ sschk();
 // POSTデータ取得
 $admin_or_emp = $_POST['admin_or_emp'];
 $work_in_or_out = $_POST['work_in_or_out'];
+$recorder = $_POST['recorder'];
 
 // データベース接続
 $pdo = db_conn();
@@ -30,6 +31,7 @@ foreach ($_POST as $key => $value) {
         $text = isset($_POST["text_$index"]) ? $_POST["text_$index"] : null;
         $photo = isset($_FILES["photo_$index"]) ? get_file_content($_FILES["photo_$index"]) : null;
         $temp = isset($_POST["temp_$index"]) ? $_POST["temp_$index"] : null;
+        $auth_id= $_POST["auth_id"];
 
         // デバッグ情報
         // echo '<pre>';
@@ -42,17 +44,20 @@ foreach ($_POST as $key => $value) {
         // echo '</pre>';
 
         // データ挿入SQL作成
-        $sql = "INSERT INTO H_record_table(admin_or_emp, work_in_or_out, title, check_item, text, photo, temp, indate)
-                VALUES(:admin_or_emp, :work_in_or_out, :title, :check_item, :text, :photo, :temp, :indate)";
+        $sql = "INSERT INTO H_record_table(admin_or_emp, work_in_or_out, title, recorder, check_item, text, photo, temp, indate,auth_id)
+                VALUES(:admin_or_emp, :work_in_or_out, :title, :recorder, :check_item, :text, :photo, :temp, :indate, :auth_id)";
+
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':admin_or_emp', $admin_or_emp, PDO::PARAM_INT);
         $stmt->bindValue(':work_in_or_out', $work_in_or_out, PDO::PARAM_INT);
         $stmt->bindValue(':title', $title, PDO::PARAM_STR);
+        $stmt->bindValue(':recorder', $recorder, PDO::PARAM_INT);
         $stmt->bindValue(':check_item', $check_item, PDO::PARAM_STR);
         $stmt->bindValue(':text', $text, PDO::PARAM_STR);
         $stmt->bindValue(':photo', $photo, PDO::PARAM_LOB); // BLOB型として設定
         $stmt->bindValue(':temp', $temp, PDO::PARAM_INT);
         $stmt->bindValue(':indate', $indate, PDO::PARAM_STR);
+        $stmt->bindValue(':auth_id', $auth_id, PDO::PARAM_INT);
         $status = $stmt->execute();
 
         if ($status == false) {
