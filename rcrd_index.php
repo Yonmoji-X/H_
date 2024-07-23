@@ -133,29 +133,49 @@ div{padding: 10px;font-size:16px;}
       const titleInput = document.createElement('input');
       titleInput.type = 'hidden';
       titleInput.name = `title_${index}`;
-      titleInput.value = row.title;
+      titleInput.value = row.id;
+      // titleInput.value = row.title;
 
       titleBox.appendChild(titleP);
       titleBox.appendChild(titleInput);
       itemField.appendChild(titleBox);
 
       if (row.check_exist == 1) {
-        const checkBox = document.createElement('div');
-        checkBox.id = 'check_box';
-        const yesButton = document.createElement('input');
-        yesButton.type = 'radio';
-        yesButton.name = `check_item_${index}`;
-        yesButton.value = 'YES';
-        yesButton.id = `check_box_yes_${index}`;
-        const noButton = document.createElement('input');
-        noButton.type = 'radio';
-        noButton.name = `check_item_${index}`;
-        noButton.value = 'NO';
-        noButton.id = `check_box_no_${index}`;
-        checkBox.appendChild(yesButton);
-        checkBox.appendChild(noButton);
-        itemField.appendChild(checkBox);
-      }
+  const checkBox = document.createElement('div');
+  checkBox.id = 'check_box';
+
+  // Yesボタンとそのラベルを作成
+  const yesButton = document.createElement('input');
+  yesButton.type = 'radio';
+  yesButton.name = `check_item_${index}`;
+  yesButton.value = 'YES';
+  yesButton.id = `check_box_yes_${index}`;
+
+  const yesLabel = document.createElement('label');
+  yesLabel.htmlFor = `check_box_yes_${index}`;
+  yesLabel.textContent = 'YES';
+
+  // Noボタンとそのラベルを作成
+  const noButton = document.createElement('input');
+  noButton.type = 'radio';
+  noButton.name = `check_item_${index}`;
+  noButton.value = 'NO';
+  noButton.id = `check_box_no_${index}`;
+
+  const noLabel = document.createElement('label');
+  noLabel.htmlFor = `check_box_no_${index}`;
+  noLabel.textContent = 'NO';
+
+  // ラジオボタンとラベルをcheckBoxに追加
+  checkBox.appendChild(yesButton);
+  checkBox.appendChild(yesLabel);
+  checkBox.appendChild(noButton);
+  checkBox.appendChild(noLabel);
+
+  // itemFieldにcheckBoxを追加
+  itemField.appendChild(checkBox);
+}
+
 
       if (row.text_exist == 1) {
         const textBox = document.createElement('div');
