@@ -141,11 +141,9 @@ img.photo { width: 100px; height: 100px; object-fit: cover; }
           <?php endforeach; ?>
         </select>
 
-        <div style="background: gray;">メモ
+        <div style="background: white;">メモ
             <ul style="padding: 0; list-style-type: none;">
-                <li style="display: inline-block; margin-right: 20px;">記録者絞り込み：現状selectのみ作成</li>
                 <li style="display: inline-block; margin-right: 20px;">日付絞り込み</li>
-                <li style="display: inline-block; margin-right: 20px;">項目絞り込み：現状selectのみ作成</li>
             </ul>
         </div>
 
@@ -219,8 +217,8 @@ function displayData(filteredData) {
             <td>${v.photo ? '<img class="photo" src="data:image/jpeg;base64,' + v.photo + '" alt="Photo">' : '無'}</td>
             <td>${v.template_name}</td>
             <?php if($_SESSION["kanri_flg"] == "1"){ ?>
-            <td><a href="tmplt_delete.php?id=${v.id}">削除</a></td>
-            <td><a href="tmplt_detail.php?id=${v.id}">編集</a></td>
+            <td><a href="rcrd_delete.php?id=${v.id}">削除</a></td>
+            <td><a href="rcrd_detail.php?id=${v.id}">編集</a></td>
             <?php } ?>
         `;
         tableBody.appendChild(tr);

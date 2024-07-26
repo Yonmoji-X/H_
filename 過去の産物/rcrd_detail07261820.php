@@ -97,12 +97,7 @@ $json_mmbr = json_encode($members, JSON_UNESCAPED_UNICODE);
                     <?php endforeach; ?>
                 </select>
 
-                <!-- 隠しフィールドでIDとauth_idを送信 -->
-                <input type="hidden" name="id" value="<?= h($rcrd['id']) ?>">
                 <input type="hidden" name="auth_id" value="<?= h($auth_id) ?>">
-                <input type="hidden" name="admin_or_emp" value="<?= h($admin_or_emp) ?>">
-                <input type="hidden" name="work_in_or_out" value="<?= h($work_in_or_out) ?>">
-                <input type="hidden" name="title" value="<?= h($title) ?>">
                 <input type="submit" value="完了">
             </fieldset>
         </form>
