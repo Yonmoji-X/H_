@@ -140,6 +140,9 @@ img.photo { width: 100px; height: 100px; object-fit: cover; }
             <option value="<?= h($template['t_id']) ?>"><?= h($template['t_title']) ?></option>
           <?php endforeach; ?>
         </select>
+        <!-- <div> -->
+        <input type="date" id="date_picker" />
+        <!-- </div> -->
 
         <div style="background: white;">メモ
             <ul style="padding: 0; list-style-type: none;">
@@ -150,7 +153,7 @@ img.photo { width: 100px; height: 100px; object-fit: cover; }
         <table id="record_table">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>日時</th>
                     <th>項目名</th>
                     <th>管理者/従業員</th>
                     <th>出勤/退勤</th>
@@ -173,6 +176,28 @@ img.photo { width: 100px; height: 100px; object-fit: cover; }
 <!-- Main[End] -->
 
 <script>
+    function formatDateTime(dateTimeStr) {
+  // 入力の日時文字列をDateオブジェクトに変換
+  const date = new Date(dateTimeStr);
+
+  // 年、月、日、時間、分を取得
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+
+  // フォーマットした文字列を返す
+  return `${year}/${month}/${day} ${hours}:${minutes}`;
+}
+
+function extractDate(dateTimeStr) {
+    // 日時文字列から日付部分を抽出
+    const datePart = dateTimeStr.split(' ')[0];
+    return datePart;
+}
+
+
 // PHPからのJSONデータを取得
 const jsonString = '<?= isset($json) ? $json : '' ?>';
 let data = [];
@@ -189,12 +214,17 @@ function filterData() {
     const workInOrOut = document.getElementById('id_work_in_or_out').value;
     const selRecorder = document.getElementById('id_sel_recorder').value;
     const selTitle = document.getElementById('id_sel_title').value;
+    const pickDate = document.getElementById('date_picker').value;
+    console.log(pickDate);
+    console.log(data[0].indate);
 
     const filteredData = data.filter(row => {
+        // console.log(row);
         return (adminOrEmp === "" || row.admin_or_emp == adminOrEmp) &&
               (workInOrOut === "" || row.work_in_or_out == workInOrOut) &&
               (selRecorder === "" || row.recorder == selRecorder) &&
-              (selTitle === "" || row.title == selTitle);
+              (selTitle === "" || row.title == selTitle) &&
+              (pickDate === "" || extractDate(row.indate) == pickDate);
     });
 
     displayData(filteredData);
@@ -203,11 +233,11 @@ function filterData() {
 function displayData(filteredData) {
     const tableBody = document.getElementById('table_body');
     tableBody.innerHTML = '';
-
+    // formatDateTime(v.indate);
     filteredData.forEach(v => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${v.id}</td>
+            <td>${formatDateTime(v.indate)}</td>
             <td>${v.template_title}</td>
             <td>${v.admin_or_emp == 1 ? "管理者" : "従業員"}</td>
             <td>${v.work_in_or_out == 1 ? "出勤時" : "退勤時"}</td>
@@ -230,6 +260,7 @@ document.getElementById('id_admin_or_emp').addEventListener('change', filterData
 document.getElementById('id_work_in_or_out').addEventListener('change', filterData);
 document.getElementById('id_sel_recorder').addEventListener('change', filterData);
 document.getElementById('id_sel_title').addEventListener('change', filterData);
+document.getElementById('date_picker').addEventListener('change', filterData);
 
 // ページ読み込み時にフィルタリングを実行
 window.onload = filterData;
