@@ -1,28 +1,11 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>データ登録</title>
-    <!-- <link href="css/bootstrap.min.css" rel="stylesheet"> -->
-    <style>div{padding: 10px;font-size:16px;}</style>
-</head>
-<body>
-
-    <!-- Head[Start] -->
-    <header>
-    <?= include("menu.php");?>
-        <!-- <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <div class="navbar-header"><a class="navbar-brand" href="tmplt_select.php">チェック項目設定</a></div>
-            </div>
-        </nav> -->
-    </header>
-    <?php
+<?php
     // セッションの開始
     session_start();
     // funcs.phpを読み込む
     include("funcs.php");
 
+    // LOGINチェック
+    sschk();
     // データベース接続
     $pdo = db_conn();
 
@@ -31,7 +14,7 @@
 
     try {
         // SQLクエリを準備
-        $stmt = $pdo->prepare("SELECT name FROM m_an_table WHERE auth_id = :auth_id");
+        $stmt = $pdo->prepare("SELECT name FROM H_member_table WHERE auth_id = :auth_id");
 
         // プレースホルダーに値をバインド
         $stmt->bindValue(':auth_id', $auth_id, PDO::PARAM_INT);
@@ -54,6 +37,26 @@
         echo 'Database error: ' . $e->getMessage();
     }
     ?>
+    <!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>データ登録</title>
+    <!-- <link href="css/bootstrap.min.css" rel="stylesheet"> -->
+    <style>div{padding: 10px;font-size:16px;}</style>
+</head>
+<body>
+
+    <!-- Head[Start] -->
+    <header>
+    <?= include("menu.php");?>
+        <!-- <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header"><a class="navbar-brand" href="tmplt_select.php">チェック項目設定</a></div>
+            </div>
+        </nav> -->
+    </header>
+
     <!-- Head[End] -->
 
     <!-- Main[Start] -->

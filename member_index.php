@@ -1,3 +1,14 @@
+<?php
+        session_start();
+
+        include("funcs.php");
+
+// LOGINチェック
+sschk();
+        $auth_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+
+        ?>
+
 <!DOCTYPE html>
 <html lang="ja">
     <head>
@@ -20,16 +31,7 @@
         <!-- Head[End] -->
 
         <!-- Main[Start] -->
-        <?php
-        session_start();
-        // セッションからユーザーIDを取得
-        // $auth_id = isset($_SESSION['id']);
-        // $auth_name = isset($_SESSION['user_id']);
-        $auth_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
-        // var_dump($auth_id);
-        // var_dump($_SESSION);
-        ?>
         <form method="POST" action="member_insert.php">
             <div class="jumbotron">
                 <fieldset>

@@ -1,18 +1,40 @@
 <?php
 // 0. SESSION開始！！
 session_start();
-
+// var_dump($_SESSION);
 // 1. 関数群の読み込み
 include("funcs.php");
 
 // LOGINチェック
 sschk();
-
+$pdo = db_conn();
 // 2. データ登録SQL作成
-$auth_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+// var_dump($_SESSION['kanri_flg']);
+if ($_SESSION["kanri_flg"] == "1") {
+    $auth_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+}
+if ($_SESSION["kanri_flg"] == "0") {
+    $gene_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+    $sql_gene = "SELECT * FROM H_share_table WHERE gene_id = :gene_id";
+    $stmt_gene = $pdo->prepare($sql_gene);
+    $stmt_gene->bindValue(':gene_id', $gene_id, PDO::PARAM_INT);
+    $status_gene = $stmt_gene->execute();
+    var_dump($status_gene);
+    $genes = [];
+    $auth_names = [];
+    if ($genes === false) {
+        sql_error($stmt_gene);
+    } else {
+        $genes = $stmt_gene->fetchAll(PDO::FETCH_ASSOC); // 全データ取得
+
+    }
+    // var_dump($genes);
+    $auth_id = $genes[0]['auth_id'];
+    var_dump($auth_id);
+}
 
 // データ取得SQL作成
-$pdo = db_conn();
+
 $sql = "SELECT * FROM H_record_table WHERE auth_id = :auth_id";
 $stmt = $pdo->prepare($sql);
 $stmt->bindValue(':auth_id', $auth_id, PDO::PARAM_INT);
@@ -111,7 +133,15 @@ img.photo { width: 100px; height: 100px; object-fit: cover; }
 <body id="main">
 <!-- Head[Start] -->
 <header>
-<?= include("menu.php");?>
+    <?= include("menu.php");?>
+    <?php if($_SESSION["kanri_flg"] == "0"){ ?>
+        <select name="gene" id="id_sel_gene">
+            <!-- <option value="">記録者：全て</option> -->
+            <?php foreach ($genes as $gene): ?>
+                <option value="<?= h($gene['auth_id']) ?>"><?= h($gene['auth_id']) ?></option>
+            <?php endforeach; ?>
+        </select>
+    <?php } ?>
 </header>
 <!-- Head[End] -->
 
@@ -144,11 +174,11 @@ img.photo { width: 100px; height: 100px; object-fit: cover; }
         <input type="date" id="date_picker" />
         <!-- </div> -->
 
-        <div style="background: white;">メモ
+        <!-- <div style="background: white;">メモ
             <ul style="padding: 0; list-style-type: none;">
                 <li style="display: inline-block; margin-right: 20px;">日付絞り込み</li>
             </ul>
-        </div>
+        </div> -->
 
         <table id="record_table">
             <thead>
